@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8'>
+		<script src='pdfmake/pdfmake.min.js'></script>
+		<script src='pdfmake/vfs_fonts.js'></script>
+	</head>
+	<body>
+		<script>
+			// Retrieve storyline player object from parent window
+			var player = window.parent.GetPlayer();
+			
+			// Retrieve the Learners Name from the 
+			var name = player.GetVar("learnerName").replace(/(\r\n|\r|\n)/g, '<br />');
+			
+			// Retrieve the title of the project from the parent window. (This is the title set when publishing)
+			var title = window.parent.story.title;
+			
+			// Get todays date in format dd/mm/yyyy
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+			if(dd<10) {
+				dd='0'+dd
+			} 
+			if(mm<10) {
+				mm='0'+mm
+			}
+			date = dd+'/'+mm+'/'+yyyy;
+			
+			// Define PDF output - See http://pdfmake.org/#/gettingstarted for information on creating a PDF document with pdfmake.
+			var docDefinition = {
+				pageSize: 'A4',
+				pageOrientation: 'landscape',
+				pageMargins: [ 0, 110, 0, 100 ],
+				
+				header:[
+					{ text: 'Organisation Name\n\n', fontSize: 30, alignment: 'center', margin: [ 0, 40, 0, 40 ] }
+				],
+				
+				content: [
+					 { text: 'This is to certify that', fontSize: 16, alignment: 'center', margin: [ 0, 0, 0, 20 ] },
+					 { text: name, fontSize: 25, alignment: 'center', margin: [ 0, 0, 0, 20 ] },
+					 { text: 'successfully completed the following activity', fontSize: 16, alignment: 'center', margin: [ 0, 0, 0, 10 ] },
+					 { text: title, fontSize: 25, alignment: 'center', margin: [ 20, 0, 20, 0 ] }				
+				],
+				
+				footer:[
+					{ text: 'Awarded on: ' + date, fontSize: 16, alignment: 'center', margin: [ 0, 0, 0, 0 ] },
+				]
+			};
+			
+			// Function to generate and download the PDF using the document definition object (docDefinition) we defined previously.
+			function generatePDF() {
+			  pdfMake.createPdf(docDefinition).download(title + '.pdf');
+			}	
+			
+		</script>
+	</body>
+</html>
